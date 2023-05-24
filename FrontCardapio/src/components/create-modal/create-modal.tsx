@@ -2,7 +2,7 @@ import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { useFoodDataMutate } from '../../hooks/useFoodDataMutate';
 import { FoodData } from '../../interface/FoodData';
 
-import "./modal.css";
+import "../style-modal/modal.css";
 
 interface InputProps {
     label: string;
@@ -10,7 +10,7 @@ interface InputProps {
     updateValue: Dispatch<SetStateAction<string | number>>;
 }
 
-interface ModalProps {
+export interface ModalProps {
     closeModal(): void;
 }
 

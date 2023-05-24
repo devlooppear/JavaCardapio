@@ -1,23 +1,23 @@
-import { useQuery } from 'react-query'
-import axios, { AxiosPromise } from 'axios'
+import { useQuery, useMutation } from 'react-query'
+import axios from 'axios'
 import { FoodData } from '../interface/FoodData'
 
 const API_URL = 'http://localhost:8080'
 
-const fetchData = async(): AxiosPromise<FoodData[]> => {
-    const response = axios.get(API_URL + '/food')
-    return response;
-}
+export function useFoodData() {
+  const { data, error, isLoading, refetch } = useQuery<FoodData[], Error>('food-data', async () => {
+    const response = await axios.get(`${API_URL}/food`)
+    return response.data
+  })
 
-export function useFoodData(){
-    const query = useQuery({
-        queryFn: fetchData,
-        queryKey: ['food-data'],
-        retry: 2
-    })
-
-    return {
-        ...query,
-        data: query.data?.data
+  const updateFoodData = useMutation<void, unknown, { id: number; newData: FoodData }>(
+    ({ id, newData }) => axios.put(`${API_URL}/food/${id}`, newData),
+    {
+      onSuccess: () => {
+        refetch() // Refresh the data after updating
+      }
     }
+  )
+
+  return { data, error, isLoading, updateFoodData }
 }
